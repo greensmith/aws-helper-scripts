@@ -69,7 +69,7 @@ read -p "is this correct? (y/n) " -n 1 -r
 # create the child hosted zone
 # profile is child domain profile
 
-# aws $profile $region route53 create-hosted-zone --name $child_domain_name --caller-reference $(date +%s)
+aws $profile $region route53 create-hosted-zone --name $child_domain_name --caller-reference $(date +%s)
 
 # get the zone id of the child hosted zone
 
@@ -130,5 +130,6 @@ change_request_id=$(aws $parent_profile $region route53 change-resource-record-s
 # wait for change to complete
 aws $parent_profile $region route53 wait resource-record-sets-changed --id $change_request_id
 
-
+# delete the change-resource-record-sets.json file
+rm change-resource-record-sets.json
 
