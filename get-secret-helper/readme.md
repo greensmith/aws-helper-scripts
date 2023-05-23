@@ -11,10 +11,10 @@ we are assuming that your aws credentials are configured correctly to access the
 this script will
 
 - connect to the aws account using the default profile or the profile provided
-- fetch back a list of secrets for you to chooise from
+- fetch back a list of secrets for you to choose from
 - print the value of that secret in the terminal
 
-of course, this is not duper super secure and there are probably better ways to accomplish this
+of course, this is not very secure (results are printed in plain text) it would be advisable to find a better solution.
 
 ## command
 
