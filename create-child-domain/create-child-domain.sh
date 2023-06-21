@@ -68,7 +68,7 @@ read -p "is this correct? (y/n) " -n 1 -r
 
 # create the child hosted zone
 # profile is child domain profile
-
+# Todo -  should probably check it already exists first
 aws $profile $region route53 create-hosted-zone --name $child_domain_name --caller-reference $(date +%s)
 
 # get the zone id of the child hosted zone
@@ -96,7 +96,7 @@ change=$(cat <<EOF > change-resource-record-sets.json
     "Comment": "Create an NS record pointing to the $child_domain_name zone",
     "Changes": [
         {
-        "Action": "CREATE",
+        "Action": "UPSERT",
         "ResourceRecordSet": {
             "Name": "$child_domain_name",
             "Type": "NS",
