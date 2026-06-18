@@ -1,45 +1,50 @@
-# Ecs Exec Helper
+# ECS Exec Helper
 
-Purpose of this script is to make it easier to enter an interactive shell/run commands on AWS ECS containers
+Purpose of this script is to make it easier to enter an interactive shell/run commands on AWS ECS containers.
 
-## assumptions and pre-requisties
+## Assumptions and Prerequisites
 
-the assumption is that the containers you are trying to connect to have already been configured to use esc exec command
+- The containers you are trying to connect to have already been configured to use ECS Exec. See the [AWS documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) for setup instructions.
+- Your AWS credentials are configured correctly to access the necessary services.
+- Required tools: `aws` CLI v2, `fzf`, `jq`
 
-the following AWS documentation describes how to enable and configure this https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
+## What This Script Does
 
-we also are assuming that your aws credentials are configured correctly to access the nessecery services.
+Uses `fzf` for interactive fuzzy selection of:
 
-## ecs execute-command
+1. **AWS profile** from `~/.aws/config` (skipped if `--profile` is provided)
+2. **Cluster / Service / Task / Container** in a single hierarchical view
+3. **Command** to execute (presets + custom input)
 
-The properties requried to execute the ecs execute-commmand are
+### Features
 
-- cluster: the name of the cluster on which your container is running
-- task: the task id that has your container
-- container: the name of the container inside the task that you wish to connect to
-- command: the command to run
+- Fuzzy profile selection from `~/.aws/config`
+- Single hierarchical fzf view: Cluster → Service → Task → Container
+- ANSI-coloured entries with Name tags
+- Preview pane showing task status, start time, image, and health
+- Command picker with presets (`/bin/sh`, `/bin/bash`, `/bin/ash`) + custom input
 
-gathering this information can be fiddly as you need to copy values from multiple api calls or pages in the console.
-
-## what this script does
-
-this script will
-
-- connect to the aws account using the default profile or the profile provided
-- fetch back a list of clusters for you to choose from
-- fetch back a list of tasks running on that cluster for you to choose from
-- fetch back a list of containers inside that task for you to choose from
-- prompt for the command to execute (interactively)
-
-
-## command
+## Usage
 
 ```bash
-./ecs-exec-helper.sh [-h or ---help] [-p or --profile profilename] [-r or --region awsregion]
+# Interactive (prompts for everything)
+./ecs-exec-helper.sh
+
+# With a specific profile
+./ecs-exec-helper.sh --profile MyDevAccount
+
+# With region override
+./ecs-exec-helper.sh --region eu-west-1
+
+# Combined
+./ecs-exec-helper.sh -p MyDevAccount -r eu-west-1
 ```
 
-e.g.
+## Options
 
-```bash
-./ecs-exec-helper.sh --profile MyDevAccount --region eu-west-1
-```
+| Flag | Description |
+|------|-------------|
+| `-h`, `--help` | Print help and exit |
+| `-p`, `--profile` | AWS profile to use (bypasses fzf profile selection) |
+| `-r`, `--region` | AWS region override |
+| `-v`, `--version` | Print version and exit |

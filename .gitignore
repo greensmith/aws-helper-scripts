@@ -1,0 +1,6 @@
+#don't add .json files we might have generated
+**/*.json
+#dont add .sql files we might have generated
+**/*.sql
+#don't add .log files we might have generated
+**/*.log

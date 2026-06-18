@@ -1,37 +1,49 @@
-# Ec2 Start Session
+# EC2 Start Session
 
-Purpose of this script is to make it easier to enter an interactive shell/run commands on AWS EC2 instance
+Purpose of this script is to make it easier to start an SSM session on a running EC2 instance.
 
-## assumptions and pre-requisties
+## Assumptions and Prerequisites
 
-the assumption is that the instances you are trying to connect to have already been configured with SSM agent and you can start SSM sessions with them.
+- The instances you are trying to connect to have the SSM Agent installed and running, and you have permissions to start SSM sessions.
+- Your AWS credentials are configured correctly to access the necessary services.
+- Required tools: `aws` CLI v2, `fzf`, `jq`
 
-we also are assuming that your aws credentials are configured correctly to access the nessecery services.
+## What This Script Does
 
-## ssm start-session
+Uses `fzf` for interactive fuzzy selection of:
 
-The properties requried to execute the ssm start-session  are
+1. **AWS profile** from `~/.aws/config` (skipped if `--profile` is provided)
+2. **EC2 instance** from a list of running instances (with metadata preview)
 
-- target: an ec2 instance id
+### Features
 
-## what this script does
+- Fuzzy profile selection from `~/.aws/config`
+- Instance list with Name tags, instance ID, type, and availability zone
+- Preview pane showing network details (private/public IP), instance type, and launch time
+- ANSI-coloured entries for readability
+- Executes `aws ssm start-session --target <instance-id>`
 
-this script will
-
-- connect to the aws account using the default profile or the profile provided
-- fetch back a list of running ec2 instance names for you to choose from
-- fetch back the instance id of the selected instance
-- execute ssm start-session --target <instance-id>
-
-
-## command
-
-```bash
-./ec2-start-session.sh [-h or ---help] [-p or --profile profilename] [-r or --region awsregion]
-```
-
-e.g.
+## Usage
 
 ```bash
-./ec2-start-session.sh --profile MyDevAccount --region eu-west-1
+# Interactive (prompts for everything)
+./ec2-start-session.sh
+
+# With a specific profile
+./ec2-start-session.sh --profile MyDevAccount
+
+# With region override
+./ec2-start-session.sh --region eu-west-1
+
+# Combined
+./ec2-start-session.sh -p MyDevAccount -r eu-west-1
 ```
+
+## Options
+
+| Flag | Description |
+|------|-------------|
+| `-h`, `--help` | Print help and exit |
+| `-p`, `--profile` | AWS profile to use (bypasses fzf profile selection) |
+| `-r`, `--region` | AWS region override |
+| `-v`, `--version` | Print version and exit |

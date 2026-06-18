@@ -1,29 +1,50 @@
 # Get Secret Helper
 
-Purpose of this script is to make it easier to get a secret value from Secrets Manager
+Purpose of this script is to make it easier to get a secret value from AWS Secrets Manager.
 
-## assumptions and pre-requisties
+## Assumptions and Prerequisites
 
-we are assuming that your aws credentials are configured correctly to access the nessecery services.
+- Your AWS credentials are configured correctly to access the necessary services.
+- Required tools: `aws` CLI v2, `fzf`, `jq`
+- Optional (for clipboard): `xclip`, `xsel`, `pbcopy` (macOS), or `wl-copy` (Wayland)
 
-## what this script does
+## What This Script Does
 
-this script will
+Uses `fzf` for interactive fuzzy selection of:
 
-- connect to the aws account using the default profile or the profile provided
-- fetch back a list of secrets for you to choose from
-- print the value of that secret in the terminal
+1. **AWS profile** from `~/.aws/config` (skipped if `--profile` is provided)
+2. **Secret** from the secrets list (with metadata preview pane)
+3. **JSON key extraction** (if the secret value is JSON, you can select a specific key)
 
-of course, this is not very secure (results are printed in plain text) it would be advisable to find a better solution.
+### Features
 
-## command
+- Fuzzy profile selection from `~/.aws/config`
+- Secret list with Name tags and metadata preview pane
+- Formatted JSON output with syntax highlighting
+- JSON key extraction — select a specific key to extract its value
+- Clipboard copy support (auto-detects clipboard tool)
+
+## Usage
 
 ```bash
-./get-secret-helper.sh [-h or ---help] [-p or --profile profilename] [-r or --region awsregion]
+# Interactive (prompts for everything)
+./get-secret-helper.sh
+
+# With a specific profile
+./get-secret-helper.sh --profile MyDevAccount
+
+# With region override
+./get-secret-helper.sh --region eu-west-1
+
+# Combined
+./get-secret-helper.sh -p MyDevAccount -r eu-west-1
 ```
 
-e.g.
+## Options
 
-```bash
-./get-secret-helper.sh --profile MyDevAccount --region eu-west-1
-```
+| Flag | Description |
+|------|-------------|
+| `-h`, `--help` | Print help and exit |
+| `-p`, `--profile` | AWS profile to use (bypasses fzf profile selection) |
+| `-r`, `--region` | AWS region override |
+| `-v`, `--version` | Print version and exit |
